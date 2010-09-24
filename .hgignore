@@ -1,0 +1,13 @@
+syntax:glob
+.classpath
+.project
+.settings
+bin
+target
+*~
+*.bak
+*.orig
+derby.log
+*.iml
+*.iws
+*.ipr
