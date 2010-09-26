@@ -6,7 +6,8 @@
   <parent>
     <groupId>org.nuxeo.ecm.platform</groupId>
     <artifactId>nuxeo-platform-high-availability-parent</artifactId>
-    <version>5.4.0-I20100925_0829</version>
+    <version>5.4.0-I20100925_0829-1</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>nuxeo-platform-queue-core</artifactId>

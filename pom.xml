@@ -14,9 +14,10 @@
   <artifactId>nuxeo-platform-high-availability-parent</artifactId>
   <name>Nuxeo Platform High Availability</name>
   <packaging>pom</packaging>
+  <version>5.4.0-I20100925_0829-1</version>
  
   <properties>
-   <nuxeo.ha.version>5.4.0-SNAPSHOT</nuxeo.ha.version>
+   <nuxeo.ha.version>5.4.0-I20100925_0829</nuxeo.ha.version>
   </properties>
  
   <dependencyManagement>
@@ -49,7 +50,7 @@
      <dependency>
        <groupId>org.nuxeo.ecm.platform</groupId>
        <artifactId>nuxeo-platform-queue-core</artifactId>
-       <version>${nuxeo.ha.version}</version>
+       <version>${nuxeo.ha.version}-1</version>
      </dependency>
    </dependencies>
   </dependencyManagement>
