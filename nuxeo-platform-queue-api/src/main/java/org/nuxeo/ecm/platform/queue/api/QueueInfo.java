@@ -137,6 +137,11 @@ public interface QueueInfo<C extends Serializable> {
      */
     QueueInfo<C> blacklist();
 
+    /**
+     * Purge content
+     */
+    void purge();
+
 
 
 }

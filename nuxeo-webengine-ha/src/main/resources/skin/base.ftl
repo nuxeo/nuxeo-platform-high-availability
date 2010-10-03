@@ -44,11 +44,13 @@
           <@block name="toolbox"/>
 
           <@block name="links">
-            <ul><h3>Management</h3>
+            <ul><h3>Links</h3>
                <li>Get your <a href="${This.context.modulePath}/principal">principal</a></li>
                <li>List resources <a href="${This.context.modulePath}/locks">locks</a></li>
                <li>List job <a href="${This.context.modulePath}/queues">queues</a></li>
                <li>List server <a href="${This.context.modulePath}/statuses">statuses</a></li>
+               <#if This.previous??><li>Get <a href="${This.previous.path}"/>previous page</a></li></#if>
+               <#if This.previous??><li>Get <a href="${Root.path}"/>root page</a></li></#if>
             </ul>
           </@block>
 

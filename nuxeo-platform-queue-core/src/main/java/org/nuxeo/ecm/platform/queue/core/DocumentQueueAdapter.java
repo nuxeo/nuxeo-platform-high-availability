@@ -197,6 +197,12 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
     }
 
     @Override
+    public void purge() {
+        QueueHandler qh = Framework.getLocalService(QueueHandler.class);
+        qh.purge(name);
+    }
+
+    @Override
     public URI getOwnerName() {
         return ownerName;
     }

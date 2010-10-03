@@ -4,9 +4,11 @@
 
 <@block name="content">
 <h2>Queue info</h2>
-${This.name}
 <p class="info">
-is owned by ${info.ownerName} and is ${info.state}.</p>
+${info.name}
+was last handled at  <span class="was last handled">${info.lastHandlingTime?datetime}</span>
+                and <span class="is in state">is now ${info.state}</span>.
+</p>
 </@block>
 
 <@block name="toolbox">
@@ -14,6 +16,7 @@ is owned by ${info.ownerName} and is ${info.state}.</p>
  <h3>Toolbox</h3>
  <li><a href="${This.path}/@retry">Retry</a></li>
  <li><a href="${This.path}/@blacklist">Blacklist</a></li>
+ <li><a href="${This.path}/@purge">Purge</a></li>
 </ul>
 </@block>
 

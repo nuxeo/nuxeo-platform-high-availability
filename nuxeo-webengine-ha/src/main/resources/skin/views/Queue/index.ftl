@@ -7,8 +7,8 @@
 <#list This.infos as info>
  <span class="listing">
       <dt><a href="${This.name}/${info.name.fragment}">${info.name}</a></dt>
-       <dd><#if  info.lastHandlingDate??> was handled at  <span class="was handled">${info.lastHandlingDate?datetime}</span></if>
-       </#if> and <span class="is in state">is ${info.state}</span>.  </dd>
+       <dd>was last handled at  <span class="was last handled">${info.lastHandlingTime?datetime}</span>
+                and <span class="is in state">is now ${info.state}</span>.  </dd>
 </#list>
 </dl>
 
@@ -16,8 +16,9 @@
 
 <@block name="toolbox">
 <ul><h3>Toolbox</h3>
-<li><a href="${This.path}/@blacklist">blacklist</a></li>
-<li><a href="${This.path}/@retry">retry</a></li>
+<li><a href="${This.path}/@blacklist">Blacklist</a></li>
+<li><a href="${This.path}/@retry">Retry</a></li>
+<li><a href="${This.path}/@purge">Purge</a></li>
 </ul>
 </@block>
 

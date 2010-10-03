@@ -83,6 +83,15 @@ public class QueueObject<C extends Serializable> extends ManagementObject {
         return redirect(getPath());
     }
 
+    @GET
+    @Path("@purge")
+    public Object doGetPurge() {
+        for (QueueInfo<C> info : infos) {
+            info.purge();
+        }
+        return redirect(getPath());
+    }
+
     public List<QueueInfo<C>> getInfos() {
         return infos;
     }
