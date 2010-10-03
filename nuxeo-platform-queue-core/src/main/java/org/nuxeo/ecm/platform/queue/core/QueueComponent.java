@@ -26,11 +26,11 @@ import org.nuxeo.ecm.platform.queue.api.QueueLocator;
 import org.nuxeo.ecm.platform.queue.api.QueuePersister;
 import org.nuxeo.ecm.platform.queue.api.QueueProcessor;
 import org.nuxeo.ecm.platform.queue.api.QueueRegistry;
-import org.nuxeo.runtime.api.DefaultServiceProvider;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
+import org.nuxeo.runtime.transaction.TransactedServiceProvider;
 
 /**
  * Register queue services in nuxeo framework
@@ -45,8 +45,6 @@ public class QueueComponent extends DefaultComponent {
     protected DefaultQueueHandler handler;
 
     protected DefaultQueueRegistry registry;
-
-    protected TransactedServiceProvider provider;
 
     protected QueuesInitializationHandler initializationHandler;
 
@@ -83,7 +81,7 @@ public class QueueComponent extends DefaultComponent {
         defaultComponent = this;
         registry = new DefaultQueueRegistry();
         handler = new DefaultQueueHandler(1000, registry);
-        installServiceProvider();
+        TransactedServiceProvider.install();
     }
 
     @Override
@@ -91,18 +89,8 @@ public class QueueComponent extends DefaultComponent {
         defaultComponent = null;
         handler = null;
         registry = null;
-        uninstallServiceProvider();
     }
 
-    protected void installServiceProvider() {
-        provider = new TransactedServiceProvider(DefaultServiceProvider.getProvider());
-        DefaultServiceProvider.setProvider(provider);
-    }
-
-    protected void uninstallServiceProvider() {
-        DefaultServiceProvider.setProvider(provider.nextProvider);
-        provider = null;
-    }
 
     public static URI newName(String queueName, String contentName) {
         try {
