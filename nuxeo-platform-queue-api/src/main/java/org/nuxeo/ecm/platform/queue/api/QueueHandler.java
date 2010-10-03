@@ -71,4 +71,14 @@ public interface QueueHandler {
      */
     @Transacted
     <C extends Serializable> QueueInfo<C> retry(URI contentName);
+
+    /**
+     * Purge content processing
+     *
+     * @param <C>
+     * @param contentName
+     * @return
+     */
+    @Transacted
+    <C extends Serializable> QueueInfo<C> purge(URI contentName);
 }

@@ -39,7 +39,7 @@ public class QueueInfoObject<C extends Serializable> extends ManagementObject {
 
     @SuppressWarnings("unchecked")
     public static <C extends Serializable> QueueInfoObject<C> newObject(DefaultObject from, QueueManager<C> manager, QueueInfo<C> info) {
-        return (QueueInfoObject<C>)from.newObject("QueueItem", manager, info);
+        return (QueueInfoObject<C>)from.newObject("QueueInfo", manager, info);
     }
 
     @SuppressWarnings("unchecked")
@@ -61,16 +61,22 @@ public class QueueInfoObject<C extends Serializable> extends ManagementObject {
 
     @GET
     @Path("@blacklist")
-    public Object doBlacklist() {
+    public Object doGetBlacklist() {
         info.blacklist();
         return redirect(getPrevious().getPath());
     }
 
     @GET
     @Path("@retry")
-    public Object doRetry() {
+    public Object doGetRetry() {
         info.retry();
         return redirect(getPrevious().getPath());
     }
 
+    @GET
+    @Path("@purge")
+    public Object doGetPurge() {
+        info.purge();
+        return redirect(getPrevious().getPath());
+    }
 }

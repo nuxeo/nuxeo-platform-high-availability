@@ -139,6 +139,13 @@ public class DefaultQueueHandler implements QueueHandler {
         return info;
     }
 
+        @Override
+    public <C extends Serializable> QueueInfo<C> purge(URI name) {
+        QueuePersister<C> persister = registry.getPersister(name);
+        QueueInfo<C> info = persister.removeContent(name);
+        return info;
+    }
+
     @Override
     public <C extends Serializable> QueueInfo<C> retry(URI contentName) {
         QueuePersister<C> persister = registry.getPersister(contentName);
