@@ -29,10 +29,6 @@ import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.Q
 import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUE_ROOT_TYPE;
 import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUE_TYPE;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -42,13 +38,13 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.impl.DocumentModelImpl;
-import org.nuxeo.ecm.core.api.impl.blob.InputStreamBlob;
 import org.nuxeo.ecm.core.management.storage.DocumentStoreManager;
 import org.nuxeo.ecm.core.management.storage.DocumentStoreSessionRunner;
 import org.nuxeo.ecm.platform.heartbeat.api.HeartbeatManager;
@@ -119,7 +115,7 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
             detachDocument(doc);
             session.removeDocument(ref);
             session.save();
-            return new DocumentQueueAdapter<C>(doc);
+            return new DocumentQueueAdapter<C>(doc, contentType);
         } catch (ClientException e) {
             throw new QueueError("Cannot remove content for " + contentName, e);
         }
@@ -173,7 +169,7 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
             doc = session.createDocument(doc);
             detachDocument(doc);
             session.save();
-            return new DocumentQueueAdapter<C>(doc);
+            return new DocumentQueueAdapter<C>(doc, contentType);
         } catch (ClientException e) {
             throw new QueueError("Cannot add content " + name, e);
         }
@@ -195,7 +191,7 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
             doc = session.saveDocument(doc);
             detachDocument(doc);
             session.save();
-            return new DocumentQueueAdapter<C>(doc);
+            return new DocumentQueueAdapter<C>(doc, contentType);
         } catch (ClientException e) {
             throw new QueueError("Cannot set launched for " + contentName);
         }
@@ -210,7 +206,7 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
             doc = session.saveDocument(doc);
             detachDocument(doc);
             session.save();
-            return new DocumentQueueAdapter<C>(doc);
+            return new DocumentQueueAdapter<C>(doc, contentType);
         } catch (ClientException e) {
             throw new QueueError("Cannot blacklist " + contentName, e);
         }
@@ -240,7 +236,7 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
         List<QueueInfo<C>> infos = new ArrayList<QueueInfo<C>>(docs.size());
         for (DocumentModel doc:docs) {
             detachDocument(doc);
-            infos.add(new DocumentQueueAdapter<C>(doc));
+            infos.add(new DocumentQueueAdapter<C>(doc, contentType));
         }
         return infos;
         } catch (ClientException e) {
@@ -276,7 +272,7 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
                 throw new QueueError("no such content", contentName);
             }
             detachDocument(doc);
-            return new DocumentQueueAdapter<C>(doc);
+            return new DocumentQueueAdapter<C>(doc, contentType);
         } catch (ClientException e) {
             throw new QueueError("Canot get info of " + contentName, e);
         }
@@ -322,19 +318,11 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
     }
 
     protected void injectData(DocumentModel doc, String xpath, Serializable content) throws ClientException {
-        InputStreamBlob blob = null;
+        Blob blob = null;
         if (content != null) {
-            try {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ObjectOutputStream out = new ObjectOutputStream(baos);
-                out.writeObject(content);
-                out.flush();
-                blob = new InputStreamBlob(new ByteArrayInputStream(baos.toByteArray()));
-            } catch (IOException e) {
-                log.error("Couldn't write object", e);
-            }
+            blob =  new DataSerializer().toXML(content);
         }
-        doc.setPropertyValue(xpath, blob);
+        doc.setPropertyValue(xpath, (Serializable)blob);
     }
 
     protected  PathRef newPathRef(CoreSession session, URI name) throws ClientException {
@@ -342,38 +330,17 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
         return new PathRef(queueFolder.getPathAsString() + "/" + name.toASCIIString());
     }
 
-
-
     protected static void detachDocument(DocumentModel doc) throws ClientException {
         ((DocumentModelImpl) doc).detach(true);
     }
 
        @Override
     public QueueInfo<C> saveError(URI name,  Throwable error)  {
-        SaveErrorRunner runner = new SaveErrorRunner(name, error);
-        runner.runSafe();
-        return new DocumentQueueAdapter<C>(runner.doc);
-    }
-
-    protected  class SaveErrorRunner extends DocumentStoreSessionRunner {
-
-        protected DocumentModel doc;
-
-        protected final URI contentName;
-
-        protected final Throwable error;
-
-        protected SaveErrorRunner(URI name, Throwable error) {
-            this.contentName = name;
-            this.error = error;
-        }
-
-        @Override
-        public void run() throws ClientException {
+        try {
             DocumentModel queue = queue(session);
-            doc = session.getChild(queue.getRef(), contentName.toASCIIString());
+            DocumentModel doc = session.getChild(queue.getRef(), name.toASCIIString());
             if (doc == null) {
-                throw new QueueError("no such content", contentName);
+                throw new QueueError("no such content", name);
             }
 
             injectData(doc, QUEUEITEM_ERROR_PROPERTY, error);
@@ -381,8 +348,11 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
             doc = session.saveDocument(doc);
             detachDocument(doc);
             session.save();
+
+            return new DocumentQueueAdapter<C>(doc, contentType);
+        } catch (ClientException e) {
+            throw new QueueError("Cannot save error for " + name, e);
         }
     }
-
 
 }

@@ -16,7 +16,13 @@
  */
 package org.nuxeo.ecm.platform.queue.core.storage;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.nuxeo.ecm.core.api.Blob;
+import org.nuxeo.ecm.core.api.impl.blob.InputStreamBlob;
+import org.nuxeo.ecm.platform.queue.api.QueueError;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -30,16 +36,19 @@ public class DataSerializer {
 
     protected XStream xstream = new XStream(new DomDriver());
 
-    public <T> String toXML(T infos) {
-        return xstream.toXML(infos);
+    public <T> Blob toXML(T infos) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        xstream.toXML(infos, baos);
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        return new InputStreamBlob(bais);
     }
 
-    public <T> T fromXML(InputStream is, Class<T> clazz) {
-        return clazz.cast(xstream.fromXML(is));
-    }
-
-    public <T> T fromXML(String content, Class<T> clazz) {
-        return clazz.cast(xstream.fromXML(content));
+    public <T> T fromXML(Blob blob, Class<T> clazz) {
+        try {
+            return clazz.cast(xstream.fromXML(blob.getStream()));
+        } catch (IOException e) {
+            throw new QueueError("Cannot read data from blob", e);
+        }
     }
 
 }
