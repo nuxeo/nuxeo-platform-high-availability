@@ -30,10 +30,11 @@ import org.nuxeo.ecm.platform.queue.api.QueueInfo;
  */
 public class DocumentQueueAdapterFactory implements DocumentAdapterFactory {
 
+    @SuppressWarnings("unchecked")
     @Override
     public Object getAdapter(DocumentModel doc, @SuppressWarnings("rawtypes") Class itf) {
         if (QueueInfo.class.isAssignableFrom(itf)) {
-            return new DocumentQueueAdapter<Serializable>(doc);
+            return new DocumentQueueAdapter<Serializable>(doc,  itf);
         }
         return null;
     }

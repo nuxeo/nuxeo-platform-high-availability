@@ -23,8 +23,6 @@ import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.Q
 import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUEITEM_SCHEMA;
 import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUEITEM_SERVERID;
 
-
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Calendar;
@@ -58,9 +56,12 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
 
     final URI ownerName;
 
+    final Class<C> contentClass;
 
-    public DocumentQueueAdapter(DocumentModel doc) {
+
+    public DocumentQueueAdapter(DocumentModel doc, Class<C> contentClass) {
         this.doc = doc;
+        this.contentClass = contentClass;
         try {
             serverURI = new URI((String) doc.getProperty(QUEUEITEM_SCHEMA, QUEUEITEM_SERVERID));
             ownerName = new URI((String) doc.getProperty(QUEUEITEM_SCHEMA, DocumentQueueConstants.QUEUEITEM_OWNER));
@@ -97,9 +98,10 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
         throw new Error("unexpected error while trying to get the c date");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public C getContent() {
-        return (C)fetchData(QUEUEITEM_CONTENT_PROPERTY);
+        return (C)fetchData(QUEUEITEM_CONTENT_PROPERTY, Object.class);
     }
 
     @Override
@@ -212,19 +214,13 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
         return State.Handled.equals(getState());
     }
 
-    @SuppressWarnings("unchecked")
-    protected <T> T fetchData(String xpath) {
+    protected <T> T fetchData(String xpath, Class<T> clazz) {
         try {
             Blob data = (Blob) doc.getPropertyValue(xpath);
             if (data == null) {
                 return null;
             }
-            ObjectInputStream ois = new ObjectInputStream(data.getStream());
-            try {
-                return (T) ois.readObject();
-            } finally {
-                ois.close();
-            }
+            return new DataSerializer().fromXML(data, clazz);
         } catch (Exception e) {
             throw new QueueError("Cannot fetch error from " + doc.getPath(), e);
         }
@@ -232,7 +228,7 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
     }
 
     public Throwable getError() {
-        return fetchData(QUEUEITEM_ERROR_PROPERTY);
+        return fetchData(QUEUEITEM_ERROR_PROPERTY, Throwable.class);
     }
 
     public boolean isFailed() {
