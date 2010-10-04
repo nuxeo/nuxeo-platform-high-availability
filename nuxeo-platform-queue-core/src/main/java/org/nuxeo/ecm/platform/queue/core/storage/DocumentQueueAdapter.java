@@ -14,12 +14,14 @@
  * Contributors:
  *     Sun Seng David TAN (a.k.a. sunix) <stan@nuxeo.com>
  */
-package org.nuxeo.ecm.platform.queue.core;
+package org.nuxeo.ecm.platform.queue.core.storage;
 
-import static org.nuxeo.ecm.platform.queue.core.DocumentQueueConstants.QUEUEITEM_EXECUTION_COUNT_PROPERTY;
-import static org.nuxeo.ecm.platform.queue.core.DocumentQueueConstants.QUEUEITEM_SCHEMA;
-import static org.nuxeo.ecm.platform.queue.core.DocumentQueueConstants.QUEUEITEM_SERVERID;
-import static org.nuxeo.ecm.platform.queue.core.DocumentQueueConstants.QUEUEITEM_BLACKLIST_TIME;
+import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUEITEM_BLACKLIST_TIME;
+import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUEITEM_CONTENT_PROPERTY;
+import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUEITEM_ERROR_PROPERTY;
+import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUEITEM_EXECUTION_COUNT_PROPERTY;
+import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUEITEM_SCHEMA;
+import static org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants.QUEUEITEM_SERVERID;
 
 
 import java.io.ObjectInputStream;
@@ -95,24 +97,9 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
         throw new Error("unexpected error while trying to get the c date");
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public C getContent() {
-        try {
-            C context = null;
-            Blob data = (Blob) doc.getProperty(QUEUEITEM_SCHEMA, DocumentQueueConstants.QUEUEITEM_CONTENT);
-            if (data != null) {
-                ObjectInputStream ois = new ObjectInputStream(data.getStream());
-                try {
-                    context = (C) ois.readObject();
-                } finally {
-                    ois.close();
-                }
-            }
-            return context;
-        } catch (Exception e) {
-            throw new QueueError("unexpected error while trying to get the content queue", e);
-        }
+        return (C)fetchData(QUEUEITEM_CONTENT_PROPERTY);
     }
 
     @Override
@@ -145,6 +132,9 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
     public State getState() {
         if (isBlacklisted()) {
             return State.Blacklisted;
+        }
+        if (isFailed()) {
+            return State.Failed;
         }
         if (isOrphaned()) {
             return State.Orphaned;
@@ -222,4 +212,35 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
         return State.Handled.equals(getState());
     }
 
+    @SuppressWarnings("unchecked")
+    protected <T> T fetchData(String xpath) {
+        try {
+            Blob data = (Blob) doc.getPropertyValue(xpath);
+            if (data == null) {
+                return null;
+            }
+            ObjectInputStream ois = new ObjectInputStream(data.getStream());
+            try {
+                return (T) ois.readObject();
+            } finally {
+                ois.close();
+            }
+        } catch (Exception e) {
+            throw new QueueError("Cannot fetch error from " + doc.getPath(), e);
+        }
+
+    }
+
+    public Throwable getError() {
+        return fetchData(QUEUEITEM_ERROR_PROPERTY);
+    }
+
+    public boolean isFailed() {
+        return getError() != null;
+    }
+
+    public void error(Throwable error) {
+        QueueHandler qh = Framework.getLocalService(QueueHandler.class);
+        qh.error(name,error);
+    }
 }

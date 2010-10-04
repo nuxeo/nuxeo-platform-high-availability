@@ -15,7 +15,7 @@
  *     Nuxeo - initial API and implementation
  */
 
-package org.nuxeo.ecm.platform.queue.core;
+package org.nuxeo.ecm.platform.queue.core.storage;
 
 
 public class DocumentQueueConstants {
@@ -38,9 +38,11 @@ public class DocumentQueueConstants {
 
     public static final String QUEUEITEM_BLACKLIST_TIME = "blacklistTime";
 
-    public static final String QUEUEITEM_CONTENT = "content";
+    public static final String QUEUEITEM_CONTENT_PROPERTY= "queueitem:content";
 
     public static final String QUEUEITEM_EXECUTION_COUNT_PROPERTY = "queueitem:executionCount";
+
+    public static final String QUEUEITEM_ERROR_PROPERTY = "queueitem:error";
 
     private DocumentQueueConstants() {
     }

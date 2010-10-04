@@ -20,7 +20,6 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * Save contents on a persistent back-end. Three implementation are available by
  * default. The first one, will implement the persister in memory for testing
@@ -80,12 +79,12 @@ public interface QueuePersister<C extends Serializable> {
     boolean hasContent(URI name);
 
     /**
-     * Should be manually be called by the handler when a content processing is launched.
+     * Should be manually be called by the handler when a content processing is
+     * launched.
      *
      * @param the content name
      */
     QueueInfo<C> setLaunched(URI name);
-
 
     /**
      * Should be manually be called by the handler when a task is finished
@@ -124,6 +123,10 @@ public interface QueuePersister<C extends Serializable> {
      */
     void createIfNotExist();
 
-
+    /**
+     * Persist error condition
+     *
+     */
+    QueueInfo<C> saveError(URI name, Throwable e);
 
 }
