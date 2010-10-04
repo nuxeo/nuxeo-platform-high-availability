@@ -72,6 +72,9 @@ public class TestQueue extends QueueTestCase {
         List<QueueInfo<FakeContent>> ownedItems = persister.listByOwner(ownerName);
         assertEquals("owns", 1, ownedItems.size());
 
+         info = persister.saveError(contentName, new Error("test"));
+         assertTrue("content is failed", info.isFailed());
+
          info = persister.setBlacklisted(contentName);
 
         assertTrue("content is blacklisted", info.isBlacklisted());
