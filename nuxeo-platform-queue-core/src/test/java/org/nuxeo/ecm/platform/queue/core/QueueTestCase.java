@@ -26,7 +26,7 @@ public abstract class QueueTestCase extends SQLRepositoryTestCase {
         deployBundle("org.nuxeo.ecm.platform.queue");
         deployBundle("org.nuxeo.ecm.platform.queue.test");
         super.fireFrameworkStarted();
-        openSession();
+        session = openSessionAs("system");
     }
 
 }
