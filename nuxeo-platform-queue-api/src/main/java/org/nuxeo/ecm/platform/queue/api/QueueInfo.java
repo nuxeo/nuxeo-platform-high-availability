@@ -43,6 +43,7 @@ public interface QueueInfo<C extends Serializable> {
 
         Handled,
         Orphaned,
+        Failed,
         Blacklisted
 
     }
@@ -99,6 +100,12 @@ public interface QueueInfo<C extends Serializable> {
      * @return true, if is handled
      */
     boolean isHandled();
+
+    /**
+     * Checks if content has failed
+     */
+    boolean isFailed();
+
     /**
      * Gets the first handling date.
      *
@@ -128,6 +135,13 @@ public interface QueueInfo<C extends Serializable> {
     int getHandlingCount();
 
     /**
+     * Gets the failure error
+     *
+     * @return the failure error
+     */
+    Throwable getError();
+
+    /**
      * Retry handling of content
      */
     QueueInfo<C> retry();
@@ -142,6 +156,9 @@ public interface QueueInfo<C extends Serializable> {
      */
     void purge();
 
-
+    /**
+     * Indicates that processing content has failed
+     */
+    void error(Throwable error);
 
 }

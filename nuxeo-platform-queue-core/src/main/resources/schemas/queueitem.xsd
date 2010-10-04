@@ -13,5 +13,6 @@
   <xs:element name="blacklistTime" type="xs:date" />
 
   <xs:element name="content" type="nxs:content" />
+  <xs:element name="error" type="nxs:content" />
 
 </xs:schema>

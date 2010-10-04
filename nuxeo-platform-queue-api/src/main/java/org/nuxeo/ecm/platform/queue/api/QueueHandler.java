@@ -54,7 +54,7 @@ public interface QueueHandler {
     URI newName(String queueName, String contentName);
 
     /**
-     * Cancel content processing
+     * Notify content process termination, blacklist content for a while
      *
      * @param queueName
      * @param contentName
@@ -73,7 +73,7 @@ public interface QueueHandler {
     <C extends Serializable> QueueInfo<C> retry(URI contentName);
 
     /**
-     * Purge content processing
+     * Remove content from the queue
      *
      * @param <C>
      * @param contentName
@@ -81,4 +81,10 @@ public interface QueueHandler {
      */
     @Transacted
     <C extends Serializable> QueueInfo<C> purge(URI contentName);
+
+    /**
+     * Indicate that content processing has failed
+     */
+    @Transacted
+    <C extends Serializable> QueueInfo<C> error(URI contentName, Throwable error);
 }

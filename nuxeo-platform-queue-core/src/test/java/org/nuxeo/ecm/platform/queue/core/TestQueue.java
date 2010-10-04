@@ -33,6 +33,8 @@ import org.nuxeo.ecm.platform.queue.api.QueueHandler;
 import org.nuxeo.ecm.platform.queue.api.QueueInfo;
 import org.nuxeo.ecm.platform.queue.api.QueueLocator;
 import org.nuxeo.ecm.platform.queue.api.QueueManager;
+import org.nuxeo.ecm.platform.queue.core.storage.DocumentQueuePersister;
+import org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants;
 import org.nuxeo.runtime.api.Framework;
 
 /**
@@ -50,6 +52,7 @@ public class TestQueue extends QueueTestCase {
         DocumentQueuePersister<FakeContent> persister = new DocumentQueuePersister<FakeContent>("fake", FakeContent.class);
         URI ownerName = new URI("test");
         URI contentName = new URI("test:test1");
+        persister.setSession(session);
         persister.addContent(ownerName, contentName, new FakeContent());
 
         // Testing the document is in the nuxeo repo
@@ -59,7 +62,7 @@ public class TestQueue extends QueueTestCase {
 
         // testing retrieving content from the persister
         List<QueueInfo<FakeContent>> items = persister.listKnownItems();
-        assertEquals("Single content in queue", items.size(), 1);
+        assertEquals("Single content in queue", 1, items.size());
         QueueInfo<FakeContent> info = items.get(0);
 
         // additional info

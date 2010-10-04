@@ -14,7 +14,7 @@
  * Contributors:
  *     Sun Seng David TAN (a.k.a. sunix) <stan@nuxeo.com>
  */
-package org.nuxeo.ecm.platform.queue.core;
+package org.nuxeo.ecm.platform.queue.core.storage;
 
 import java.io.Serializable;
 

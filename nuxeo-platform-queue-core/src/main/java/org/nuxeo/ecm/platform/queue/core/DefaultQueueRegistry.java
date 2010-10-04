@@ -31,6 +31,8 @@ import org.nuxeo.ecm.platform.queue.api.QueueNotFoundError;
 import org.nuxeo.ecm.platform.queue.api.QueuePersister;
 import org.nuxeo.ecm.platform.queue.api.QueueProcessor;
 import org.nuxeo.ecm.platform.queue.api.QueueRegistry;
+import org.nuxeo.ecm.platform.queue.core.storage.DocumentQueuePersister;
+import org.nuxeo.ecm.platform.queue.core.storage.StorageHandler;
 
 /**
  * @author Sun Seng David TAN (a.k.a. sunix) <stan@nuxeo.com>
@@ -54,11 +56,15 @@ public class DefaultQueueRegistry implements QueueRegistry, QueueLocator {
 
     protected Map<String, Entry<?>> entries = new HashMap<String, Entry<?>>();
 
+    @SuppressWarnings("unchecked")
     @Override
     public <C extends Serializable> void register(String queueName, Class<C> contentType, QueuePersister<C> persister, QueueProcessor<C> processor) {
         assert contentType != null;
         assert persister != null;
         assert processor != null;
+        if (persister instanceof DocumentQueuePersister) {
+            persister = StorageHandler.newProxy((DocumentQueuePersister<?>)persister, QueuePersister.class);
+        }
         entries.put(queueName,  new Entry<C>(contentType, persister, processor));
     }
 

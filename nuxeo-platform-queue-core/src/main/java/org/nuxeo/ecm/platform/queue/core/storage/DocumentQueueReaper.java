@@ -1,4 +1,4 @@
-package org.nuxeo.ecm.platform.queue.core;
+package org.nuxeo.ecm.platform.queue.core.storage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

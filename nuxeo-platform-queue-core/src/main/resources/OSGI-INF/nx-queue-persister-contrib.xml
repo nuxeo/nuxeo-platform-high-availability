@@ -29,7 +29,7 @@
   <extension target="org.nuxeo.ecm.core.api.DocumentAdapterService"
     point="adapters">
     <adapter class="org.nuxeo.ecm.platform.queue.api.QueueInfo"
-      factory="org.nuxeo.ecm.platform.queue.core.DocumentQueueAdapterFactory" />
+      factory="org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueAdapterFactory" />
   </extension>
   
     <extension
@@ -45,7 +45,7 @@
   </extension>
 
   <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
-    <listener name="queue-reaper" class="org.nuxeo.ecm.platform.queue.core.DocumentQueueReaper">
+    <listener name="queue-reaper" class="org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueReaper">
         <event>queue-reaper-schedule</event>
     </listener>
   </extension>

@@ -155,4 +155,8 @@ public class DefaultQueueHandler implements QueueHandler {
         return info;
     }
 
+    public <C extends Serializable> QueueInfo<C> error(URI contentName, Throwable error) {
+        QueuePersister<C> persister = registry.getPersister(contentName);
+        return persister.saveError(contentName, error);
+    }
 }
