@@ -33,7 +33,7 @@ import org.nuxeo.ecm.platform.queue.api.QueueProcessor;
  * @author Sun Seng David TAN (a.k.a. sunix) <stan@nuxeo.com>
  *
  */
-public  class DefaultQueueManager<C extends Serializable> implements QueueManager<C> {
+public class DefaultQueueManager<C extends Serializable> implements QueueManager<C> {
 
     protected final URI queueName;
 
@@ -63,9 +63,8 @@ public  class DefaultQueueManager<C extends Serializable> implements QueueManage
         return contentType;
     }
 
-
     @Override
-    public boolean knowsContent(URI name)  {
+    public boolean knowsContent(URI name) {
         return persister.hasContent(name);
     }
 
@@ -75,7 +74,7 @@ public  class DefaultQueueManager<C extends Serializable> implements QueueManage
     }
 
     public List<QueueInfo<C>> listContentWithState(QueueInfo.State state) {
-         List<QueueInfo<C>> selection = new ArrayList<QueueInfo<C>>();
+        List<QueueInfo<C>> selection = new ArrayList<QueueInfo<C>>();
         for (QueueInfo<C> info : persister.listKnownItems()) {
             if (info.getState().equals(state)) {
                 selection.add(info);
@@ -83,7 +82,6 @@ public  class DefaultQueueManager<C extends Serializable> implements QueueManage
         }
         return selection;
     }
-
 
     @Override
     public List<QueueInfo<C>> listHandledContent() {
@@ -95,14 +93,21 @@ public  class DefaultQueueManager<C extends Serializable> implements QueueManage
         return listContentWithState(QueueInfo.State.Orphaned);
     }
 
-        @Override
+    @Override
     public List<QueueInfo<C>> listBlacklistedContent() {
-         return listContentWithState(QueueInfo.State.Blacklisted); // TODO use dao instead
+        // TODO use DAO instead
+        return listContentWithState(QueueInfo.State.Blacklisted);
+    }
+
+    @Override
+    public List<QueueInfo<C>> listFailedContent() {
+        // TODO use DAO instead
+        return listContentWithState(QueueInfo.State.Failed);
     }
 
     @Override
     public void updateInfos(URI name, C content) {
-         persister.updateContent(name, content);
+        persister.updateContent(name, content);
     }
 
     @Override
@@ -116,10 +121,9 @@ public  class DefaultQueueManager<C extends Serializable> implements QueueManage
     }
 
     @Override
-    public  URI newName(String contentName) {
+    public URI newName(String contentName) {
         return locator.newContentName(queueName, contentName);
     }
-
 
     @Override
     public void initialize() {
