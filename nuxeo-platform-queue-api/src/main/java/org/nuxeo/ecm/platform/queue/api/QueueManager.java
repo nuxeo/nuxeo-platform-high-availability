@@ -82,6 +82,13 @@ public interface QueueManager<C extends Serializable> {
 
 
     /**
+     * List infos about content that has failed.
+     *
+     * @return the list
+     */
+    List<QueueInfo<C>> listFailedContent();
+
+    /**
      * Check for the existence of a content on persistence back-end.
      *
      * @param content the content
