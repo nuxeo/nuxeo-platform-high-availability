@@ -140,9 +140,13 @@ public class DefaultQueueHandler implements QueueHandler {
     }
 
         @Override
-    public <C extends Serializable> QueueInfo<C> purge(URI name) {
-        QueuePersister<C> persister = registry.getPersister(name);
-        QueueInfo<C> info = persister.removeContent(name);
+    public <C extends Serializable> QueueInfo<C> purge(URI contentName) {
+        QueuePersister<C> persister = registry.getPersister(contentName);
+        QueueInfo<C> info = persister.getInfo(contentName);
+        if (!info.isBlacklisted()) {
+          throw new IllegalStateException(contentName + " is not blacklisted");
+        }
+        info = persister.removeContent(contentName);
         return info;
     }
 
@@ -150,6 +154,9 @@ public class DefaultQueueHandler implements QueueHandler {
     public <C extends Serializable> QueueInfo<C> retry(URI contentName) {
         QueuePersister<C> persister = registry.getPersister(contentName);
         QueueInfo<C> info = persister.getInfo(contentName);
+        if (info.isBlacklisted()) {
+          throw new IllegalStateException(contentName + " is blacklisted");
+        }
         QueueProcessor<C> processor = registry.getProcessor(contentName);
         processor.process(info);
         return info;

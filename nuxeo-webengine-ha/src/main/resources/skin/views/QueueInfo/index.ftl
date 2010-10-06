@@ -14,9 +14,13 @@ was last handled at  <span class="was last handled">${info.lastHandlingTime?date
 <@block name="toolbox">
 <ul>
  <h3>Toolbox</h3>
+<#if info.orphaned || info.failed>
  <li><a href="${This.path}/@retry">Retry</a></li>
  <li><a href="${This.path}/@blacklist">Blacklist</a></li>
+</#if>
+<#if info.blacklisted>
  <li><a href="${This.path}/@purge">Purge</a></li>
+</#if>
 </ul>
 </@block>
 
