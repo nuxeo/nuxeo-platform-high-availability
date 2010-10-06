@@ -91,12 +91,4 @@ public class QueueComponent extends DefaultComponent {
         registry = null;
     }
 
-
-    public static URI newName(String queueName, String contentName) {
-        try {
-            return new URI("nxqueue", queueName, contentName);
-        } catch (URISyntaxException e) {
-           throw new QueueError(String.format("Cannot create URI for %s:%s", queueName, contentName));
-        }
-    }
 }
