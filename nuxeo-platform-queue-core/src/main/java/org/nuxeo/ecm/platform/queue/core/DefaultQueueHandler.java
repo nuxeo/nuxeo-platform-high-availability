@@ -118,7 +118,7 @@ public class DefaultQueueHandler implements QueueHandler {
         try {
             executor.process(info);
         } catch (Throwable e) {
-            log.error("Processor throwed an error while processing "+ name);
+            log.error("Processor throwed an error while processing "+ name, e);
         }
     }
 
