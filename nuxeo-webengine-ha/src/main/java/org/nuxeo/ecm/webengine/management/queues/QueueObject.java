@@ -78,7 +78,9 @@ public class QueueObject<C extends Serializable> extends ManagementObject {
     @Path("@retry")
     public Object doGetRetry() {
         for (QueueInfo<C> info : infos) {
-            info.retry();
+            if (info.isFailed() || info.isOrphaned()) {
+                info.retry();
+            }
         }
         return redirect(getPath());
     }
@@ -87,7 +89,9 @@ public class QueueObject<C extends Serializable> extends ManagementObject {
     @Path("@purge")
     public Object doGetPurge() {
         for (QueueInfo<C> info : infos) {
-            info.purge();
+            if (info.isBlacklisted()) {
+                info.purge();
+            }
         }
         return redirect(getPath());
     }
