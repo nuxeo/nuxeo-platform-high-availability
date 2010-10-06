@@ -113,7 +113,7 @@ public class DefaultQueueRegistry implements QueueRegistry, QueueLocator {
     @Override
     public URI newContentName(String queueName, String contentName) {
         try {
-            return new URI("nxqueue", queueName, contentName);
+            return new URI("nxqueue", queueName, contentName != null ? contentName.replace('/', ':') : null);
         } catch (URISyntaxException e) {
             throw new QueueError(String.format("Cannot create URI for %s:%s", queueName, contentName));
         }
