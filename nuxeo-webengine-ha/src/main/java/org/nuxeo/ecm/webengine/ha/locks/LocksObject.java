@@ -14,7 +14,7 @@
  * Contributors:
  *     matic
  */
-package org.nuxeo.ecm.webengine.management.locks;
+package org.nuxeo.ecm.webengine.ha.locks;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ import javax.ws.rs.PathParam;
 import org.nuxeo.ecm.platform.lock.api.LockInfo;
 import org.nuxeo.ecm.platform.lock.api.LockReader;
 import org.nuxeo.ecm.webengine.WebException;
-import org.nuxeo.ecm.webengine.management.ManagementObject;
+import org.nuxeo.ecm.webengine.ha.HighAvailabilityObject;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.exceptions.WebResourceNotFoundException;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
@@ -37,7 +37,7 @@ import org.nuxeo.runtime.api.Framework;
  *
  */
 @WebObject(type = "Locks")
-public class LocksObject extends ManagementObject {
+public class LocksObject extends HighAvailabilityObject {
 
     protected LockReader reader;
     protected List<LockInfo> infos;
@@ -67,7 +67,7 @@ public class LocksObject extends ManagementObject {
     }
 
     @Path("{resource}")
-    public ManagementObject dispatch(@PathParam("resource") String resource) {
+    public HighAvailabilityObject dispatch(@PathParam("resource") String resource) {
         for (LockInfo info:infos) {
             if (info.getResource().toASCIIString().equals(resource)) {
                 return  LockObject.newLock(this, info);

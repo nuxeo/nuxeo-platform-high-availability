@@ -14,7 +14,7 @@
  * Contributors:
  *     mcedica
  */
-package org.nuxeo.ecm.webengine.management.statuses;
+package org.nuxeo.ecm.webengine.ha.statuses;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -27,7 +27,7 @@ import javax.ws.rs.Produces;
 
 import org.nuxeo.ecm.core.management.api.ProbeInfo;
 import org.nuxeo.ecm.core.management.api.ProbeManager;
-import org.nuxeo.ecm.webengine.management.ManagementObject;
+import org.nuxeo.ecm.webengine.ha.HighAvailabilityObject;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.exceptions.WebResourceNotFoundException;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
@@ -42,7 +42,7 @@ import org.nuxeo.runtime.api.Framework;
  */
 @WebObject(type = "Probes")
 @Produces("text/html; charset=UTF-8")
-public class ProbesObject extends ManagementObject {
+public class ProbesObject extends HighAvailabilityObject {
 
     protected ProbeManager probeMgr;
     protected Collection<ProbeInfo> infos;

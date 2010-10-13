@@ -14,7 +14,7 @@
  * Contributors:
  *     mcedica
  */
-package org.nuxeo.ecm.webengine.management.statuses;
+package org.nuxeo.ecm.webengine.ha.statuses;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -25,7 +25,7 @@ import org.nuxeo.ecm.core.management.api.AdministrativeStatus;
 import org.nuxeo.ecm.core.management.api.AdministrativeStatusManager;
 import org.nuxeo.ecm.webengine.WebException;
 import org.nuxeo.ecm.webengine.forms.FormData;
-import org.nuxeo.ecm.webengine.management.ManagementObject;
+import org.nuxeo.ecm.webengine.ha.HighAvailabilityObject;
 import org.nuxeo.ecm.webengine.model.Access;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
@@ -38,7 +38,7 @@ import org.nuxeo.runtime.api.Framework;
  */
 @WebObject(type = "AdministrativeStatus" , administrator=Access.GRANT)
 @Produces("text/html; charset=UTF-8")
-public class AdministrativeStatusObject extends ManagementObject {
+public class AdministrativeStatusObject extends HighAvailabilityObject {
 
     protected AdministrativeStatus administrativeStatus;
 

@@ -14,7 +14,7 @@
  * Contributors:
  *     mcedica
  */
-package org.nuxeo.ecm.webengine.management.statuses;
+package org.nuxeo.ecm.webengine.ha.statuses;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;

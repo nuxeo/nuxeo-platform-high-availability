@@ -14,7 +14,7 @@
  * Contributors:
  *     matic
  */
-package org.nuxeo.ecm.webengine.management.queues;
+package org.nuxeo.ecm.webengine.ha.queues;
 
 import java.io.Serializable;
 
@@ -23,7 +23,7 @@ import javax.ws.rs.Path;
 
 import org.nuxeo.ecm.platform.queue.api.QueueInfo;
 import org.nuxeo.ecm.platform.queue.api.QueueManager;
-import org.nuxeo.ecm.webengine.management.ManagementObject;
+import org.nuxeo.ecm.webengine.ha.HighAvailabilityObject;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
@@ -32,7 +32,7 @@ import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
  *
  */
 @WebObject(type="QueueInfo")
-public class QueueInfoObject<C extends Serializable> extends ManagementObject {
+public class QueueInfoObject<C extends Serializable> extends HighAvailabilityObject {
 
     protected QueueManager<C> manager;
     protected QueueInfo<?> info;
