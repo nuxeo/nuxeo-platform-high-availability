@@ -19,6 +19,9 @@ import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 
+import org.nuxeo.ecm.core.management.guards.Guarded;
+import org.nuxeo.runtime.transaction.Transacted;
+
 /**
  * Handle contents that needs long processing such as OCRing a document, images
  * manipulation, and eventually sequencing.
@@ -103,6 +106,7 @@ public interface QueueManager<C extends Serializable> {
      * @param content the content
      */
     @Transacted
+    @Guarded
     void updateInfos(URI name, C content);
 
     /**
