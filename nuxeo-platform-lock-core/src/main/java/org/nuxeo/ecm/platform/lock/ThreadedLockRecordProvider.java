@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * Implementation of the lockRecordProvider that is running a
@@ -39,7 +40,12 @@ public class ThreadedLockRecordProvider implements LockRecordProvider,
     public void activate(LockComponent component) {
         delegate = new JPALockRecordProvider();
         delegate.activate(component);
-        service = Executors.newSingleThreadExecutor();
+        service = Executors.newSingleThreadExecutor(new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "Nuxeo Lock Record Provider");
+            }
+        });
     }
 
     public void deactivate() {
