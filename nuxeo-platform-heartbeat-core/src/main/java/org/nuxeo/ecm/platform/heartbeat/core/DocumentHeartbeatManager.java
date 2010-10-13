@@ -90,14 +90,14 @@ public class DocumentHeartbeatManager implements HeartbeatManager {
     public void start(long delay) {
         log.info("Starting heartbeat scheduler ...");
         if (timer != null) {
-            throw new IllegalStateException("time already exist");
+            return;
         }
 
         this.delay = delay;
 
         new CreateOrUpdateServerInfo(getMyURI(), new Date()).runSafe();
         // start a schedule that regularly updates the current server start
-        timer = new Timer("Server heart beat scheduler");
+        timer = new Timer("Nuxeo Heartbeat");
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
