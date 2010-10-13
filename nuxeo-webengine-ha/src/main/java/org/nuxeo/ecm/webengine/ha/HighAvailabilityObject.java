@@ -14,14 +14,16 @@
  * Contributors:
  *     matic
  */
-package org.nuxeo.ecm.webengine.management;
+package org.nuxeo.ecm.webengine.ha;
 
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
+
+
 
 /**
  * @author matic
  *
  */
-public class ManagementObject extends DefaultObject {
+public class HighAvailabilityObject extends DefaultObject {
 
 }

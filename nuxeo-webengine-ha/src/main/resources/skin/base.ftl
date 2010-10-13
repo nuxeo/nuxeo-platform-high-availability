@@ -45,7 +45,6 @@
 
           <@block name="links">
             <ul><h3>Links</h3>
-               <li>Get your <a href="${This.context.modulePath}/principal">principal</a></li>
                <li>List resources <a href="${This.context.modulePath}/locks">locks</a></li>
                <li>List job <a href="${This.context.modulePath}/queues">queues</a></li>
                <li>List server <a href="${This.context.modulePath}/statuses">statuses</a></li>

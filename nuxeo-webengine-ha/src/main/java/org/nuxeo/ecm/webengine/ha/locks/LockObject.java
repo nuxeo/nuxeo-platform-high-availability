@@ -14,7 +14,7 @@
  * Contributors:
  *     matic
  */
-package org.nuxeo.ecm.webengine.management.locks;
+package org.nuxeo.ecm.webengine.ha.locks;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,7 +23,7 @@ import javax.ws.rs.Path;
 
 import org.nuxeo.ecm.platform.lock.api.LockInfo;
 import org.nuxeo.ecm.webengine.WebException;
-import org.nuxeo.ecm.webengine.management.ManagementObject;
+import org.nuxeo.ecm.webengine.ha.HighAvailabilityObject;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
@@ -33,7 +33,7 @@ import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
  *
  */
 @WebObject(type = "Lock")
-public class LockObject extends ManagementObject {
+public class LockObject extends HighAvailabilityObject {
 
     protected LockInfo info;
 

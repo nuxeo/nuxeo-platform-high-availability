@@ -14,12 +14,12 @@
  * Contributors:
  *     matic
  */
-package org.nuxeo.ecm.webengine.management.statuses;
+package org.nuxeo.ecm.webengine.ha.statuses;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
-import org.nuxeo.ecm.webengine.management.ManagementObject;
+import org.nuxeo.ecm.webengine.ha.HighAvailabilityObject;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
@@ -31,7 +31,7 @@ import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
  *
  */
 @WebObject(type="Statuses")
-public class StatusesObject extends ManagementObject {
+public class StatusesObject extends HighAvailabilityObject {
 
     public static StatusesObject newObject(DefaultObject parent) {
         return (StatusesObject)parent.newObject("Statuses");

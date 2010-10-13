@@ -14,7 +14,7 @@
  * Contributors:
  *     matic
  */
-package org.nuxeo.ecm.webengine.management.queues;
+package org.nuxeo.ecm.webengine.ha.queues;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,7 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.platform.queue.api.QueueInfo;
 import org.nuxeo.ecm.platform.queue.api.QueueManager;
-import org.nuxeo.ecm.webengine.management.ManagementObject;
+import org.nuxeo.ecm.webengine.ha.HighAvailabilityObject;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.exceptions.WebResourceNotFoundException;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
@@ -37,7 +37,7 @@ import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
  *
  */
 @WebObject(type = "Queue")
-public class QueueObject<C extends Serializable> extends ManagementObject {
+public class QueueObject<C extends Serializable> extends HighAvailabilityObject {
 
     protected static Log log = LogFactory.getLog(QueueObject.class);
 
