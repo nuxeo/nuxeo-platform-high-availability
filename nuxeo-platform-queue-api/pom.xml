@@ -14,4 +14,11 @@
   <description>Nuxeo Queue Service - API for managing job queue</description>
 
 
+  <dependencies>
+        <dependency>
+          <groupId>org.nuxeo.ecm.core</groupId>
+          <artifactId>nuxeo-core-management</artifactId>
+        </dependency>
+  </dependencies>
+
 </project>
