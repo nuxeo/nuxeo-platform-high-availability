@@ -14,7 +14,7 @@
  * Contributors:
  *     matic
  */
-package org.nuxeo.ecm.webengine.management.queues;
+package org.nuxeo.ecm.webengine.ha.queues;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ import javax.ws.rs.PathParam;
 
 import org.nuxeo.ecm.platform.queue.api.QueueLocator;
 import org.nuxeo.ecm.platform.queue.api.QueueManager;
-import org.nuxeo.ecm.webengine.management.ManagementObject;
+import org.nuxeo.ecm.webengine.ha.HighAvailabilityObject;
 import org.nuxeo.ecm.webengine.model.Access;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
@@ -37,7 +37,7 @@ import org.nuxeo.runtime.api.Framework;
  *
  */
 @WebObject(type = "Queues", administrator=Access.GRANT)
-public class QueuesObject extends ManagementObject {
+public class QueuesObject extends HighAvailabilityObject {
 
     public static  QueuesObject newObject(DefaultObject from) {
         return (QueuesObject) from.newObject("Queues");
