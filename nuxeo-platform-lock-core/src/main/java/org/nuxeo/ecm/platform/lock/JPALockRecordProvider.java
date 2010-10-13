@@ -30,7 +30,6 @@ import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.persistence.HibernateConfiguration;
 import org.nuxeo.ecm.core.persistence.PersistenceProvider;
 import org.nuxeo.ecm.core.persistence.PersistenceProviderFactory;
-import org.nuxeo.ecm.core.persistence.PersistenceProviderFriend;
 import org.nuxeo.runtime.api.Framework;
 
 /**
@@ -91,7 +90,7 @@ public class JPALockRecordProvider implements LockRecordProvider,
     }
 
     protected EntityManager open(boolean start) {
-        EntityManager em = PersistenceProviderFriend.acquireEntityManager(persistenceProvider());
+        EntityManager em = persistenceProvider().acquireEntityManager();
         if (start) {
             em.getTransaction().begin();
         }
