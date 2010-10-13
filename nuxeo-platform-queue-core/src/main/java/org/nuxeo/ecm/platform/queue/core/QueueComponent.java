@@ -17,10 +17,7 @@
 package org.nuxeo.ecm.platform.queue.core;
 
 import java.lang.reflect.Method;
-import java.net.URI;
-import java.net.URISyntaxException;
 
-import org.nuxeo.ecm.platform.queue.api.QueueError;
 import org.nuxeo.ecm.platform.queue.api.QueueHandler;
 import org.nuxeo.ecm.platform.queue.api.QueueLocator;
 import org.nuxeo.ecm.platform.queue.api.QueuePersister;
@@ -31,6 +28,7 @@ import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
 import org.nuxeo.runtime.transaction.TransactedServiceProvider;
+import org.nuxeo.ecm.core.management.guards.GuardedServiceProvider;
 
 /**
  * Register queue services in nuxeo framework
@@ -82,6 +80,7 @@ public class QueueComponent extends DefaultComponent {
         registry = new DefaultQueueRegistry();
         handler = new DefaultQueueHandler(1000, registry);
         TransactedServiceProvider.install();
+        GuardedServiceProvider.install();
     }
 
     @Override

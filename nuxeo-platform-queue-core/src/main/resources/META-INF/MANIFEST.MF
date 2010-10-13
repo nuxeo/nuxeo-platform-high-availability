@@ -20,6 +20,7 @@ Import-Package: com.thoughtworks.xstream,
  org.nuxeo.ecm.core.api.repository,
  org.nuxeo.ecm.core.event,
  org.nuxeo.ecm.core.management.api,
+ org.nuxeo.ecm.core.management.guards,
  org.nuxeo.ecm.core.management.statuses,
  org.nuxeo.ecm.core.management.storage,
  org.nuxeo.ecm.core.repository,
@@ -34,4 +35,5 @@ Import-Package: com.thoughtworks.xstream,
 Eclipse-AutoStart: false
 Require-Bundle: org.nuxeo.ecm.core;bundle-version="0.0.0"
 Eclipse-BuddyPolicy: dependent
-Provide-Package: org.nuxeo.ecm.platform.queue.core
+Provide-Package: org.nuxeo.ecm.platform.queue.core,
+ org.nuxeo.ecm.platform.queue.core.storage

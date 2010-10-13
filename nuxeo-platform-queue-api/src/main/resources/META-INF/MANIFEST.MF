@@ -7,3 +7,5 @@ Nuxeo-Require: org.nuxeo.runtime
 Export-Package: org.nuxeo.ecm.platform.queue.api
 Bundle-Version: 0.0.0.SNAPSHOT
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.nuxeo.ecm.core.management.guards,
+ org.nuxeo.runtime.transaction
