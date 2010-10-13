@@ -16,6 +16,9 @@
  */
 package org.nuxeo.ecm.platform.queue.api;
 
+import org.nuxeo.ecm.core.management.guards.Guarded;
+import org.nuxeo.runtime.transaction.Transacted;
+
 import java.io.Serializable;
 import java.net.URI;
 
@@ -25,6 +28,7 @@ import java.net.URI;
  * @author Sun Seng David TAN (a.k.a. sunix) <stan@nuxeo.com>
  * @author "Stephane Lacoin at Nuxeo (aka matic)"
  */
+
 public interface QueueHandler {
 
     /**
@@ -33,6 +37,7 @@ public interface QueueHandler {
      * @param content the content
      */
     @Transacted
+    @Guarded
     <C extends Serializable> void newContent(URI owner, URI contentName,  C content);
 
     /**
@@ -42,6 +47,7 @@ public interface QueueHandler {
      * @param resource the content name
      */
     @Transacted
+    @Guarded
     <C extends Serializable> void newContentIfUnknown(URI ownerName, URI contentName,  C content);
 
     /**
@@ -51,6 +57,7 @@ public interface QueueHandler {
      * @param contentName
      * @return
      */
+    @Guarded
     URI newName(String queueName, String contentName);
 
     /**
@@ -70,6 +77,7 @@ public interface QueueHandler {
      * @return
      */
     @Transacted
+    @Guarded
     <C extends Serializable> QueueInfo<C> retry(URI contentName);
 
     /**
