@@ -299,11 +299,11 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
     }
 
     @Override
-    public int removeBlacklisted(Date from) {
+    public int removeBlacklisted(URI queueName, Date from) {
         try {
         String ts = formatTimestamp(from);
-        log.debug("Removing blacklisted doc oldest than " + ts);
-        String req = String.format("SELECT * from QueueItem where qitm:blacklistTime < %s and ecm:isProxy = 0", ts);
+        log.debug("Removing blacklisted doc oldest than " + ts + " for " + queueName);
+        String req = String.format("SELECT * from QueueItem where ecm:path STARTSWITH '%s' qitm:blacklistTime < %s and ecm:isProxy = 0", queuePath(),  ts);
         DocumentModelList docs = session.query(req);
         int removedCount = docs.size();
         for (DocumentModel doc : docs) {
@@ -352,6 +352,31 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
             return new DocumentQueueAdapter<C>(doc, contentType);
         } catch (ClientException e) {
             throw new QueueError("Cannot save error for " + name, e);
+        }
+    }
+
+              @Override
+    public QueueInfo<C> cancelError(URI contentName)  {
+        try {
+            DocumentModel queue = queue(session);
+            DocumentModel doc = session.getChild(queue.getRef(), contentName.toASCIIString());
+            if (doc == null) {
+                throw new QueueError("no such content", contentName);
+            }
+
+            HeartbeatManager heartbeat = Framework.getLocalService(HeartbeatManager.class);
+
+            doc.setProperty(QUEUEITEM_SCHEMA, QUEUEITEM_SERVERID, heartbeat.getInfo().getId().toASCIIString());
+            doc.setPropertyValue(QUEUEITEM_ERROR_PROPERTY, null);
+
+
+            doc = session.saveDocument(doc);
+            detachDocument(doc);
+            session.save();
+
+            return new DocumentQueueAdapter<C>(doc, contentType);
+        } catch (ClientException e) {
+            throw new QueueError("Cannot reset " + contentName, e);
         }
     }
 

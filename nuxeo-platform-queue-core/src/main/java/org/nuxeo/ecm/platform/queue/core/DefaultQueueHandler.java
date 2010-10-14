@@ -157,6 +157,7 @@ public class DefaultQueueHandler implements QueueHandler {
         if (info.isBlacklisted()) {
           throw new IllegalStateException(contentName + " is blacklisted");
         }
+        info = persister.cancelError(contentName);
         QueueProcessor<C> processor = registry.getProcessor(contentName);
         processor.process(info);
         return info;
