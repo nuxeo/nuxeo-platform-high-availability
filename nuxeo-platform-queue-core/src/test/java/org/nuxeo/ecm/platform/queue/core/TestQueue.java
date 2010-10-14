@@ -81,7 +81,7 @@ public class TestQueue extends QueueTestCase {
 
         persister.addContent(ownerName, new URI("test:test2"), new FakeContent());
 
-        int count = persister.removeBlacklisted(new Date());
+        int count = persister.removeBlacklisted(ownerName, new Date());
 
         assertEquals("Removed single content", 1, count);
 
