@@ -9,6 +9,9 @@ ${info.name}
 was last handled at  <span class="was last handled">${info.lastHandlingTime?datetime}</span>
                 and <span class="is in state">is now ${info.state}</span>.
 </p>
+<#if info.failed>
+<div class="error was">info.error</div>
+</#if>
 </@block>
 
 <@block name="toolbox">
