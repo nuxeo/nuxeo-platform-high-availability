@@ -303,7 +303,7 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
         try {
         String ts = formatTimestamp(from);
         log.debug("Removing blacklisted doc oldest than " + ts + " for " + queueName);
-        String req = String.format("SELECT * from QueueItem where ecm:path STARTSWITH '%s' qitm:blacklistTime < %s and ecm:isProxy = 0", queuePath(),  ts);
+        String req = String.format("SELECT * FROM QueueItem WHERE ecm:path STARTSWITH '%s' AND qitm:blacklistTime < %s AND ecm:isProxy = 0", queuePath(),  ts);
         DocumentModelList docs = session.query(req);
         int removedCount = docs.size();
         for (DocumentModel doc : docs) {
