@@ -135,7 +135,7 @@ public class DefaultQueueManager<C extends Serializable> implements QueueManager
         Calendar cal = Calendar.getInstance();
         cal.roll(Calendar.MINUTE, -10);
         Date from = cal.getTime();
-        return persister.removeBlacklisted(from);
+        return persister.removeBlacklisted(queueName, from);
     }
 
 }
