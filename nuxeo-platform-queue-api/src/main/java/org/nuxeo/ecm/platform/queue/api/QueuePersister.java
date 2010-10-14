@@ -114,7 +114,7 @@ public interface QueuePersister<C extends Serializable> {
      * @param the date from where the content should be removed
      * @return the number of content removed
      */
-    int removeBlacklisted(Date from);
+    int removeBlacklisted(URI queueName, Date from);
 
     /**
      * Create the queue if it does not exist already
@@ -128,5 +128,10 @@ public interface QueuePersister<C extends Serializable> {
      *
      */
     QueueInfo<C> saveError(URI name, Throwable e);
+
+    /**
+     * Remote error
+     */
+    QueueInfo<C> cancelError(URI name);
 
 }
