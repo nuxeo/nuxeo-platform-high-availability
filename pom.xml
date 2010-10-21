@@ -7,12 +7,12 @@
   <parent>
     <artifactId>nuxeo-features-parent</artifactId>
     <groupId>org.nuxeo.ecm.platform</groupId>
-    <version>5.4.0-I20101011_0115-CP01</version>
+    <version>5.4.0-I20101011_0115-CP03</version>
   </parent>
 
   <groupId>org.nuxeo.ecm.platform</groupId>
   <artifactId>nuxeo-platform-high-availability-parent</artifactId>
-  <version>5.4.0-I20101011_0115-CP02</version>
+  <version>5.4.0-I20101011_0115-CP03</version>
   <name>Nuxeo Platform High Availability</name>
   <packaging>pom</packaging>
  
@@ -45,12 +45,12 @@
      <dependency>
        <groupId>org.nuxeo.ecm.platform</groupId>
        <artifactId>nuxeo-platform-queue-api</artifactId>
-       <version>${nuxeo.ha.version}-CP02</version>
+       <version>${nuxeo.ha.version}-CP03</version>
      </dependency>
      <dependency>
        <groupId>org.nuxeo.ecm.platform</groupId>
        <artifactId>nuxeo-platform-queue-core</artifactId>
-       <version>${nuxeo.ha.version}-CP02</version>
+       <version>${nuxeo.ha.version}-CP03</version>
      </dependency>
    </dependencies>
   </dependencyManagement>
