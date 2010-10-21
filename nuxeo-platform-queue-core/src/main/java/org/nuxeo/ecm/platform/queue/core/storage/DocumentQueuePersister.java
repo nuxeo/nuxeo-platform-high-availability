@@ -253,15 +253,10 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
     public int removeByOwner(URI ownerName) {
         try {
             DocumentModel queue = queue(session);
-            String query = String.format("SELECT * FROM QueueItem WHERE ecm:parentId = '%s' AND  qitm:owner = '%s'",
+            String query = String.format("SELECT ecm:uuid FROM QueueItem WHERE ecm:parentId = '%s' AND  qitm:owner = '%s'",
                     queue.getId(),
                     ownerName.toASCIIString());
-            List<DocumentModel> docs = session.query(query);
-            for (DocumentModel doc:docs) {
-                session.removeDocument(doc.getRef());
-            }
-            session.save();
-        return docs.size();
+            return doRemove(query);
         } catch (ClientException e) {
             throw new QueueError("Cannot remove content owned by " + ownerName, e);
         }
@@ -286,20 +281,16 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
         return new SimpleDateFormat("'TIMESTAMP' ''yyyy-MM-dd HH:mm:ss.SSS''").format(date);
     }
 
-    protected class RemoveBlacklistedRunner extends DocumentStoreSessionRunner {
-
-         final Date from;
-
-         int removedCount;
-
-         protected RemoveBlacklistedRunner(Date from) {
-             this.from = from;
-         }
-
-        @Override
-        public void run() throws ClientException {
+    protected int doRemove(String query) throws ClientException {
+        IterableQueryResult res = session.queryAndFetch(query, "NXQL");
+        int removedCount = 0;
+        for (Map<String, Serializable> map : res) {
+            DocumentRef ref = new IdRef((String) map.get(NXQL.ECM_UUID));
+            session.removeDocument(ref);
+            session.save();
+            removedCount += 1;
         }
-
+        return removedCount;
     }
 
     @Override
@@ -308,15 +299,7 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
             String ts = formatTimestamp(from);
             log.debug("Removing blacklisted doc oldest than " + ts + " for " + queueName);
             String query = String.format("SELECT ecm:uuid FROM QueueItem WHERE ecm:path STARTSWITH '%s' AND qitm:blacklistTime < %s AND ecm:isProxy = 0", queuePath(), ts);
-            IterableQueryResult res = session.queryAndFetch(query, "NXQL");
-            int removedCount = 0;
-            for (Map<String, Serializable> map : res) {
-                DocumentRef ref = new IdRef((String) map.get(NXQL.ECM_UUID));
-                session.removeDocument(ref);
-                session.save();
-                removedCount += 1;
-            }
-            return removedCount;
+            return doRemove(query);
         } catch (ClientException e) {
             throw new QueueError("Cannot remove blacklisted content of " + queueName, e);
         }
