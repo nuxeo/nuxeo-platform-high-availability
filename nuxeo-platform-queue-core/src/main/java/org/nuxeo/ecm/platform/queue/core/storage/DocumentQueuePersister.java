@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,11 +43,14 @@ import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.ClientException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentRef;
+import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.IterableQueryResult;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.impl.DocumentModelImpl;
 import org.nuxeo.ecm.core.management.storage.DocumentStoreManager;
 import org.nuxeo.ecm.core.management.storage.DocumentStoreSessionRunner;
+import org.nuxeo.ecm.core.query.sql.NXQL;
 import org.nuxeo.ecm.platform.heartbeat.api.HeartbeatManager;
 import org.nuxeo.ecm.platform.queue.api.QueueError;
 import org.nuxeo.ecm.platform.queue.api.QueueInfo;
@@ -301,17 +305,18 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
     @Override
     public int removeBlacklisted(URI queueName, Date from) {
         try {
-        String ts = formatTimestamp(from);
-        log.debug("Removing blacklisted doc oldest than " + ts + " for " + queueName);
-        String req = String.format("SELECT * FROM QueueItem WHERE ecm:path STARTSWITH '%s' AND qitm:blacklistTime < %s AND ecm:isProxy = 0", queuePath(),  ts);
-        DocumentModelList docs = session.query(req);
-        int removedCount = docs.size();
-        for (DocumentModel doc : docs) {
-            log.debug("Removing blacklisted doc " + doc.getPathAsString());
-            session.removeDocument(doc.getRef());
-        }
-        session.save();
-        return removedCount;
+            String ts = formatTimestamp(from);
+            log.debug("Removing blacklisted doc oldest than " + ts + " for " + queueName);
+            String query = String.format("SELECT ecm:uuid FROM QueueItem WHERE ecm:path STARTSWITH '%s' AND qitm:blacklistTime < %s AND ecm:isProxy = 0", queuePath(), ts);
+            IterableQueryResult res = session.queryAndFetch(query, "NXQL");
+            int removedCount = 0;
+            for (Map<String, Serializable> map : res) {
+                DocumentRef ref = new IdRef((String) map.get(NXQL.ECM_UUID));
+                session.removeDocument(ref);
+                session.save();
+                removedCount += 1;
+            }
+            return removedCount;
         } catch (ClientException e) {
             throw new QueueError("Cannot remove blacklisted content of " + queueName, e);
         }
