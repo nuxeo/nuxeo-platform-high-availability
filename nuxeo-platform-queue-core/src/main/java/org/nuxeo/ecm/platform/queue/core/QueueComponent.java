@@ -78,7 +78,7 @@ public class QueueComponent extends DefaultComponent {
     public void activate(ComponentContext context) throws Exception {
         defaultComponent = this;
         registry = new DefaultQueueRegistry();
-        handler = new DefaultQueueHandler(1000, registry);
+        handler = new DefaultQueueHandler(60000, registry);
         TransactedServiceProvider.install();
         GuardedServiceProvider.install();
     }

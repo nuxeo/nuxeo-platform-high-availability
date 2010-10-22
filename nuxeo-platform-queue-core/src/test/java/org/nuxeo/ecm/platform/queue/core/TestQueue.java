@@ -17,6 +17,7 @@
 package org.nuxeo.ecm.platform.queue.core;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 
@@ -33,8 +34,8 @@ import org.nuxeo.ecm.platform.queue.api.QueueHandler;
 import org.nuxeo.ecm.platform.queue.api.QueueInfo;
 import org.nuxeo.ecm.platform.queue.api.QueueLocator;
 import org.nuxeo.ecm.platform.queue.api.QueueManager;
-import org.nuxeo.ecm.platform.queue.core.storage.DocumentQueuePersister;
 import org.nuxeo.ecm.platform.queue.core.storage.DocumentQueueConstants;
+import org.nuxeo.ecm.platform.queue.core.storage.DocumentQueuePersister;
 import org.nuxeo.runtime.api.Framework;
 
 /**
@@ -170,7 +171,7 @@ public class TestQueue extends QueueTestCase {
     }
 
 
-    public void testService() throws Exception {
+    public void testConcurrencyService() throws Exception {
         URI owner1 = new URI("queueowner:owner1");
         URI owner2 = new URI("queueowner:owner2");
         // Thread 1 and 2:
@@ -195,6 +196,31 @@ public class TestQueue extends QueueTestCase {
         assertEquals("The number of handled item is", 0,
                 queueManager.listHandledContent().size());
 
+    }
+
+    public void testBlacklistedContent() throws URISyntaxException, InterruptedException {
+        URI owner1 = new URI("queueowner:owner1");
+        URI owner2 = new URI("queueowner:owner2");
+        // Thread 1 and 2:
+        JobRunner jobRunner1 = new JobRunner(owner1);
+        JobRunner jobRunner2 = new JobRunner(owner2);
+
+        jobRunner1.start();
+        jobRunner1.thread.join();
+        jobRunner2.start();
+        jobRunner2.thread.join();
+
+        // join 1 and 2
+        assertEquals(
+                "Should has executed only one task/job (1 succeed, 1 failed)",
+                1, FakeProcessor.executed);
+
+        // Make sure that we don't have any job running
+        QueueLocator ql = Framework.getLocalService(QueueLocator.class);
+        URI name = ql.newQueueName("fake");
+        QueueManager<FakeContent> queueManager = ql.getManager(name);
+        assertEquals("The number of handled item is", 0,
+                queueManager.listHandledContent().size());
     }
 
     class JobRunner implements Runnable {

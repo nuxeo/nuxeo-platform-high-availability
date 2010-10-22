@@ -49,7 +49,6 @@ import org.nuxeo.ecm.core.api.IterableQueryResult;
 import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.impl.DocumentModelImpl;
 import org.nuxeo.ecm.core.management.storage.DocumentStoreManager;
-import org.nuxeo.ecm.core.management.storage.DocumentStoreSessionRunner;
 import org.nuxeo.ecm.core.query.sql.NXQL;
 import org.nuxeo.ecm.platform.heartbeat.api.HeartbeatManager;
 import org.nuxeo.ecm.platform.queue.api.QueueError;
@@ -283,14 +282,18 @@ public class DocumentQueuePersister<C extends Serializable> extends StorageManag
 
     protected int doRemove(String query) throws ClientException {
         IterableQueryResult res = session.queryAndFetch(query, "NXQL");
-        int removedCount = 0;
-        for (Map<String, Serializable> map : res) {
-            DocumentRef ref = new IdRef((String) map.get(NXQL.ECM_UUID));
-            session.removeDocument(ref);
-            session.save();
-            removedCount += 1;
+        try {
+            int removedCount = 0;
+            for (Map<String, Serializable> map : res) {
+                DocumentRef ref = new IdRef((String) map.get(NXQL.ECM_UUID));
+                session.removeDocument(ref);
+                session.save();
+                removedCount += 1;
+            }
+            return removedCount;
+        } finally {
+            res.close();
         }
-        return removedCount;
     }
 
     @Override
