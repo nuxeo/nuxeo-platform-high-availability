@@ -227,14 +227,17 @@ public class DocumentQueueAdapter<C extends Serializable> implements QueueInfo<C
 
     }
 
+    @Override
     public Throwable getError() {
         return fetchData(QUEUEITEM_ERROR_PROPERTY, Throwable.class);
     }
 
+    @Override
     public boolean isFailed() {
         return getError() != null;
     }
 
+    @Override
     public void error(Throwable error) {
         QueueHandler qh = Framework.getLocalService(QueueHandler.class);
         qh.error(name,error);

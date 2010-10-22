@@ -21,7 +21,6 @@ import java.net.URI;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.core.management.api.AdministrativeStatusManager;
 import org.nuxeo.ecm.platform.lock.api.AlreadyLockedException;
 import org.nuxeo.ecm.platform.lock.api.LockCoordinator;
 import org.nuxeo.ecm.platform.lock.api.NoSuchLockException;
@@ -58,9 +57,6 @@ public class DefaultQueueHandler implements QueueHandler {
 
     @Override
     public <C extends Serializable> void newContent(URI owner, URI name, C content) {
-            if (!isServerActive()) {
-                throw new QueueError("Server is not active");
-            }
             // add content in queue
             log.debug("Adding " + name);
             QueuePersister<C> persister = registry.getPersister(name);
@@ -75,10 +71,6 @@ public class DefaultQueueHandler implements QueueHandler {
 
     @Override
     public <C extends Serializable> void newContentIfUnknown(URI ownerName, URI name, C content) {
-            if (!isServerActive()) {
-                throw new QueueError("Server is not active");
-            }
-
             log.debug("Locking " + name);
         LockCoordinator coordinator = Framework.getLocalService(LockCoordinator.class);
 
@@ -98,6 +90,7 @@ public class DefaultQueueHandler implements QueueHandler {
 
         try {
             if (persister.hasContent(name)) {
+                log.debug("Canceling, " + name + " already exist");
                 return;
             }
             info = persister.addContent(ownerName, name, content);
@@ -122,10 +115,6 @@ public class DefaultQueueHandler implements QueueHandler {
         }
     }
 
-    protected boolean isServerActive()  {
-        AdministrativeStatusManager manager = Framework.getLocalService(AdministrativeStatusManager.class);
-        return manager.getNuxeoInstanceStatus().isActive();
-    }
 
     @Override
     public URI newName(String queueName, String contentName) {
@@ -134,6 +123,7 @@ public class DefaultQueueHandler implements QueueHandler {
 
     @Override
     public <C extends Serializable> QueueInfo<C> blacklist(URI name) {
+        log.debug("Blacklisting " + name);
         QueuePersister<C> persister = registry.getPersister(name);
         QueueInfo<C> info = persister.setBlacklisted(name);
         return info;
@@ -141,6 +131,7 @@ public class DefaultQueueHandler implements QueueHandler {
 
         @Override
     public <C extends Serializable> QueueInfo<C> purge(URI contentName) {
+        log.debug("Purging " + contentName);
         QueuePersister<C> persister = registry.getPersister(contentName);
         QueueInfo<C> info = persister.getInfo(contentName);
         if (!info.isBlacklisted()) {
@@ -152,6 +143,7 @@ public class DefaultQueueHandler implements QueueHandler {
 
     @Override
     public <C extends Serializable> QueueInfo<C> retry(URI contentName) {
+        log.debug("Retrying " + contentName);
         QueuePersister<C> persister = registry.getPersister(contentName);
         QueueInfo<C> info = persister.getInfo(contentName);
         if (info.isBlacklisted()) {
@@ -163,7 +155,9 @@ public class DefaultQueueHandler implements QueueHandler {
         return info;
     }
 
+    @Override
     public <C extends Serializable> QueueInfo<C> error(URI contentName, Throwable error) {
+        log.debug("Registering error " + contentName, error);;
         QueuePersister<C> persister = registry.getPersister(contentName);
         return persister.saveError(contentName, error);
     }
