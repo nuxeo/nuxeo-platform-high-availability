@@ -101,7 +101,12 @@ public class DocumentHeartbeatManager implements HeartbeatManager {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                try {
                     new CreateOrUpdateServerInfo(getMyURI(), null).runSafe();
+                } catch (Throwable e) {
+                    log.warn("Cannot update heartbeat document, shutting down", e);
+                    DocumentHeartbeatManager.this.stop();
+                }
             }
         }, delay, delay);
         log.info("Heartbeat scheduler started");
