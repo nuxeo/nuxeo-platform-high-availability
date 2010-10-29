@@ -16,11 +16,10 @@
  */
 package org.nuxeo.ecm.platform.queue.api;
 
-import org.nuxeo.ecm.core.management.guards.Guarded;
-import org.nuxeo.runtime.transaction.Transacted;
-
 import java.io.Serializable;
 import java.net.URI;
+
+import org.nuxeo.ecm.core.management.guards.Guarded;
 
 /**
  * Handle content into dedicated queues and handle
@@ -36,7 +35,6 @@ public interface QueueHandler {
      *
      * @param content the content
      */
-    @Transacted
     @Guarded
     <C extends Serializable> void newContent(URI owner, URI contentName,  C content);
 
@@ -46,7 +44,6 @@ public interface QueueHandler {
      * @param ownerName the context owner
      * @param resource the content name
      */
-    @Transacted
     @Guarded
     <C extends Serializable> void newContentIfUnknown(URI ownerName, URI contentName,  C content);
 
@@ -67,7 +64,6 @@ public interface QueueHandler {
      * @param contentName
      * @return
      */
-    @Transacted
     <C extends Serializable> QueueInfo<C> blacklist(URI contentName);
 
     /**
@@ -76,7 +72,6 @@ public interface QueueHandler {
      * @param contentName
      * @return
      */
-    @Transacted
     @Guarded
     <C extends Serializable> QueueInfo<C> retry(URI contentName);
 
@@ -87,12 +82,10 @@ public interface QueueHandler {
      * @param contentName
      * @return
      */
-    @Transacted
     <C extends Serializable> QueueInfo<C> purge(URI contentName);
 
     /**
      * Indicate that content processing has failed
      */
-    @Transacted
     <C extends Serializable> QueueInfo<C> error(URI contentName, Throwable error);
 }

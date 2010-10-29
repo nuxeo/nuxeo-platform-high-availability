@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import org.nuxeo.runtime.transaction.Transacted;
+
 /**
  * Save contents on a persistent back-end. Three implementation are available by
  * default. The first one, will implement the persister in memory for testing
@@ -39,6 +41,7 @@ public interface QueuePersister<C extends Serializable> {
      * @param content the handled content
      * @return the atomic item
      */
+    @Transacted
     QueueInfo<C> addContent(URI name, URI owner, C content);
 
     /**
@@ -54,6 +57,7 @@ public interface QueuePersister<C extends Serializable> {
      *
      * @param name the content name
      */
+    @Transacted
     QueueInfo<C> removeContent(URI name);
 
     /**
@@ -61,6 +65,7 @@ public interface QueuePersister<C extends Serializable> {
      *
      * @param name the content name
      */
+    @Transacted
     void updateContent(URI name, C content);
 
     /**
@@ -84,6 +89,7 @@ public interface QueuePersister<C extends Serializable> {
      *
      * @param the content name
      */
+    @Transacted
     QueueInfo<C> setLaunched(URI name);
 
     /**
@@ -91,6 +97,7 @@ public interface QueuePersister<C extends Serializable> {
      *
      * @param the content name
      */
+    @Transacted
     QueueInfo<C> setBlacklisted(URI contentName);
 
     /**
@@ -106,6 +113,7 @@ public interface QueuePersister<C extends Serializable> {
      * @param the owner name
      * @return the number of contents removed
      */
+    @Transacted
     int removeByOwner(URI name);
 
     /**
@@ -114,6 +122,7 @@ public interface QueuePersister<C extends Serializable> {
      * @param the date from where the content should be removed
      * @return the number of content removed
      */
+    @Transacted
     int removeBlacklisted(URI queueName, Date from);
 
     /**
@@ -121,17 +130,20 @@ public interface QueuePersister<C extends Serializable> {
      *
      * @return
      */
+    @Transacted
     void createIfNotExist();
 
     /**
      * Persist error condition
      *
      */
+    @Transacted
     QueueInfo<C> saveError(URI name, Throwable e);
 
     /**
      * Remote error
      */
+    @Transacted
     QueueInfo<C> cancelError(URI name);
 
 }
