@@ -36,8 +36,6 @@
     target="org.nuxeo.ecm.platform.scheduler.core.service.SchedulerRegistryService"
     point="schedule">
     <schedule id="queue-reaper-schedule">
-          <username>system</username>
-          <password></password>
           <eventId>queue-reaper-schedule</eventId>
           <eventCategory>default</eventCategory>
           <cronExpression>0 0/5 * * * ?</cronExpression>
