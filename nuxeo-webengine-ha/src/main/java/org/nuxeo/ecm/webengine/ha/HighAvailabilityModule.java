@@ -18,13 +18,10 @@ package org.nuxeo.ecm.webengine.ha;
 
 import javax.ws.rs.core.Application;
 
-import org.nuxeo.ecm.webengine.app.annotations.WebModule;
-
 /**
  * @author "Stephane Lacoin [aka matic] <slacoin at nuxeo.com>"
  *
  */
-@WebModule(roots= {  HighAvailabilityRoot.class } )
 public class HighAvailabilityModule extends Application {
 
 }
