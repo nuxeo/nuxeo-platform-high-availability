@@ -1,0 +1,1 @@
+DEPRECATED: this module is no more compliant with RCP Apogee. It's also useless as the need is differently addressed.
