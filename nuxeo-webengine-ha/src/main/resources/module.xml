@@ -1,2 +1,0 @@
-<?xml version="1.0"?>
-<module name="High Availability" root-type="HighAvailability" path="/ha" extends="base" headless="false"/>
